@@ -13,11 +13,11 @@
               type: 'text',
               id: 'url',
               label: 'Flickr album URL',
-              validate: CKEDITOR.dialog.validate.regex(/https:\/\/www\.flickr\.com\/photos\/columbiabusinessschool\/albums\/(\d+)/, 'A valid Flickr album URL is needed.'),
+              validate: CKEDITOR.dialog.validate.regex(/https:\/\/www\.flickr\.com\/photos\/\w+\/albums\/\d+/, 'A valid Flickr album URL is needed.'),
             },
             {
               type: 'html',
-              html: '<p>Example: https://www.flickr.com/photos/columbiabusinessschool/albums/72157629787441791</p>'
+              html: '<p>Example: https://www.flickr.com/photos/user_id_here/albums/album_id_here</p>'
             }
           ]
         }
