@@ -3,7 +3,7 @@
 /**
  * Implements hook_schema().
  */
-function ckeditor_flickr_album_slideshow_schema() {
+function cfas_schema() {
   $schema['cfas_albums'] = array(
     'description' => 'Stores data from Flickr API album responses.',
     'fields' => array(

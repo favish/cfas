@@ -32,7 +32,10 @@
         placeholder.setAttribute('data-flickr-album', albumId);
         editor.insertElement(placeholder);
 
-        Drupal.cfas.fetchAlbumPreview(albumId, editor);
+        Drupal.cfas.fetchAlbumPreview(albumId, editor)
+          .then(function() {
+            Drupal.attachBehaviors($(editor.editable().$));
+          });
       }
     };
   });

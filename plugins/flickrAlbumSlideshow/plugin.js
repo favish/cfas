@@ -11,6 +11,9 @@
       });
 
       CKEDITOR.dialog.add('flickrAlbumSlideshowDialog', this.path + 'dialogs/flickrAlbumSlideshowDialog.js');
+
+      editor.addContentsCss(this.path + '../../css/cfas.css');
+      editor.addContentsCss('/sites/all/libraries/flexslider/flexslider.css');
     }
   });
 
@@ -21,6 +24,9 @@
     var editor = e.editor;
     var $placeholder = $(editor.editable().$).find('[data-flickr-album]');
     var albumId = $placeholder.attr('data-flickr-album');
-    Drupal.cfas.fetchAlbumPreview(albumId, editor);
+    Drupal.cfas.fetchAlbumPreview(albumId, editor)
+      .then(function() {
+        Drupal.attachBehaviors($(editor.editable().$));
+      });
   }
 })(jQuery, Drupal, this);
