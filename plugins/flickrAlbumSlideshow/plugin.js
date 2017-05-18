@@ -2,16 +2,60 @@
   // Init plugin
   CKEDITOR.plugins.add('flickrAlbumSlideshow', {
     init: function(editor) {
-      editor.addCommand('flickrAlbumSlideshow', new CKEDITOR.dialogCommand('flickrAlbumSlideshowDialog'));
+      // Add command
+      editor.addCommand('cfasAddSlideshow', new CKEDITOR.dialogCommand('cfasShowDialog'));
       editor.ui.addButton('flickrAlbumSlideshow', {
         label: 'Insert Flickr album slideshow',
-        command: 'flickrAlbumSlideshow',
+        command: 'cfasAddSlideshow',
         toolbar: 'insert',
         icon: this.path + 'icons/flickr.png'
       });
 
-      CKEDITOR.dialog.add('flickrAlbumSlideshowDialog', this.path + 'dialogs/flickrAlbumSlideshowDialog.js');
+      // Dialog definition
+      CKEDITOR.dialog.add('cfasShowDialog', this.path + 'dialogs/flickrAlbumSlideshowDialog.js');
 
+      // Remove command
+      editor.addCommand('cfasRemoveSlideshow', {
+        exec: function(editor) {
+          var selection = editor.getSelection().getStartElement();
+          var placeholder = $(selection.$).closest('.cfas--placeholder');
+          placeholder.remove();
+        }
+      });
+
+      // Register the menu items
+      if (editor.addMenuItem) {
+        editor.addMenuGroup('cfasGroup');
+        editor.addMenuItems( {
+          cfasEdit: {
+            label: 'Edit Flickr album slideshow',
+            command: 'cfasAddSlideshow',
+            group: 'cfasGroup',
+            icon: this.path + 'icons/flickr.png'
+          },
+          cfasRemove: {
+            label: 'Remove Flickr album slideshow',
+            command: 'cfasRemoveSlideshow',
+            group: 'cfasGroup',
+            icon: this.path + 'icons/flickr.png'
+          }
+        });
+      }
+
+      if (editor.contextMenu) {
+        editor.contextMenu.addListener(function(element, selection) {
+          var placeholder = $(element.$).closest('.cfas--placeholder');
+
+          if (placeholder.length) {
+            return {
+              cfasEdit: CKEDITOR.TRISTATE_ON,
+              cfasRemove: CKEDITOR.TRISTATE_ON
+            };
+          }
+        });
+      }
+
+      // Add additional stylesheets
       editor.addContentsCss(this.path + '../../css/cfas.css');
       editor.addContentsCss(Drupal.settings.basePath + Drupal.settings.cfas.flexsliderCss);
       editor.addContentsCss(Drupal.settings.basePath + '/modules/system/system.messages.css');

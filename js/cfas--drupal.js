@@ -9,8 +9,7 @@
         })
       })
       .then(function(editor, data) {
-        var ed = $(editor.editable().$);
-        var placeholder = $('[data-flickr-album="' + albumId + '"]', ed);
+        var placeholder = $('[data-flickr-album="' + albumId + '"]', $(editor.editable().$));
         var preview = $('<div></div>');
         preview
           .addClass('cfas--preview')
