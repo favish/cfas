@@ -13,7 +13,7 @@
       CKEDITOR.dialog.add('flickrAlbumSlideshowDialog', this.path + 'dialogs/flickrAlbumSlideshowDialog.js');
 
       editor.addContentsCss(this.path + '../../css/cfas.css');
-      editor.addContentsCss('/sites/all/libraries/flexslider/flexslider.css');
+      editor.addContentsCss(Drupal.settings.basePath + Drupal.settings.cfas.flexsliderCss);
     }
   });
 

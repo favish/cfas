@@ -109,6 +109,9 @@ function cfas_get_album($album_id) {
   );
 }
 
+/**
+ * Accept album id from POST data and return images
+ */
 function cfas_album_submit() {
   // Grab raw POST data
   $json = file_get_contents('php://input');
@@ -127,14 +130,20 @@ function cfas_element_info_alter(&$types) {
 
 function cfas_pre_render_text_format($element) {
   // Flexslider deps
-  $element['#attached']['css'][] = libraries_get_path('flexslider') . '/flexslider.css';
   $element['#attached']['js'][] = libraries_get_path('flexslider') . '/jquery.flexslider-min.js';
   // CFAS deps
   $element['#attached']['js'][] = drupal_get_path('module', 'cfas') . '/js/cfas--flexslider.js';
-  $element['#attached']['css'][] = drupal_get_path('module', 'cfas') . '/css/cfas.css';
-
   $element['#attached']['js'][] = drupal_get_path('module', 'cfas') . '/js/cfas--drupal.js';
   $element['#attached']['js'][] = drupal_get_path('module', 'cfas') . '/js/cfas--form-submit.js';
 
   return $element;
+}
+
+/**
+ * Implements template_preprocess_page()
+ */
+function cfas_preprocess_page(&$vars) {
+  drupal_add_js(array('cfas' => array(
+    'flexsliderCss' => libraries_get_path('flexslider') . '/flexslider.css',
+  )), 'setting');
 }
