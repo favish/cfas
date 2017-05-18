@@ -1,10 +1,32 @@
 <?php
 
 /**
+ * Implements hook_permission().
+ */
+function cfas_permission() {
+  return array(
+    'configure_cfas' => array(
+      'title' => t('Configure CFAS Module'),
+      'description' => t('Allows users to configure the CFAS module.'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function cfas_menu() {
   $items = array();
+
+  $items['admin/config/media/cfas'] = array(
+    'title' => 'CKEditor Flickr Album Slideshow',
+    'description' => 'Configuration for the CFAS module',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cfas_admin_form'),
+    'access arguments' => array('configure_cfas'),
+    'type' => MENU_NORMAL_ITEM,
+  );
 
   $items['cfas-album'] = array(
     'page callback' => 'cfas_album_submit',
@@ -13,6 +35,19 @@ function cfas_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Form for admin settings()
+ */
+function cfas_admin_form($form, &$form_state) {
+  $form['cfas_flickr_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Flickr API Key'),
+    '#default_value' => variable_get('cfas_flickr_api_key'),
+  );
+
+  return system_settings_form($form);
 }
 
 /**
@@ -25,6 +60,10 @@ function cfas_theme($existing, $type, $theme, $path) {
         'images' => null
       ),
       'template' => 'templates/cfas-slideshow'
+    ),
+    'cfas_error_message' => array(
+      'vars' => array(),
+      'template' => 'templates/cfas-error-message'
     )
   );
 }
@@ -93,7 +132,17 @@ function cfas_filter_process_callback($matches) {
 function cfas_get_album($album_id) {
   module_load_include('php', 'cfas', 'includes/FlickrAlbum');
 
-  $flickr = new FlickrAlbum($album_id);
+  $api_key = variable_get('cfas_flickr_api_key', false);
+
+  // Bail and display error message of no API key has been set.
+  if (!$api_key) {
+    return theme('cfas_error_message',
+      array(
+        'url' => $GLOBALS['base_path'] . '/admin/config/media/cfas'
+      )
+    );
+  }
+  $flickr = new FlickrAlbum($api_key, $album_id);
   $album = $flickr->getAlbum();
 
   // If no valid album, fetch using Flickr API and store record

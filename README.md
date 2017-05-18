@@ -6,3 +6,7 @@ Module Dependencies
 
 Library Dependencies
 * Flexslider
+
+Setup
+* Give 'Configure CFAS Module' permission to roles
+* Add API key at /admin/config/media/cfas

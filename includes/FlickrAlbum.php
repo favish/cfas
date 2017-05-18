@@ -8,7 +8,8 @@ class FlickrAlbum {
 
   protected $time_limit = 300;
 
-  public function __construct($album_id) {
+  public function __construct($api_key, $album_id) {
+    $this->api_key = $api_key;
     $this->album_id = $album_id;
   }
 
