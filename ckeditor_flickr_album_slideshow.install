@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function ckeditor_flickr_album_slideshow_schema() {
+  $schema['cfas_albums'] = array(
+    'description' => 'Stores data from Flickr API album responses.',
+    'fields' => array(
+      'album_id' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => "The album id.",
+      ),
+      'created' => array(
+        'description' => 'The timestamp of the API response.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'images' => array(
+        'type' => 'blob',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'description' => 'Serialized array of images.',
+      )
+    ),
+    'primary key' => array('album_id'),
+  );
+
+  return $schema;
+}

@@ -1,0 +1,5 @@
+name            = CKEditor Flickr Album Slideshow
+description     = Add a Flickr album slideshow to content via the WYSIWYG.
+core            = 7.x
+dependencies[]  = wysiwyg
+dependencies[]  = libraries
