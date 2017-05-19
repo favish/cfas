@@ -61,9 +61,15 @@ function cfas_theme($existing, $type, $theme, $path) {
       ),
       'template' => 'templates/cfas-slideshow'
     ),
-    'cfas_error_message' => array(
+    'cfas_missing_api_key' => array(
       'vars' => array(),
-      'template' => 'templates/cfas-error-message'
+      'template' => 'templates/cfas-missing-api-key'
+    ),
+    'cfas_invalid_response' => array(
+      'vars' => array(
+        'message' => null
+      ),
+      'template' => 'templates/cfas-invalid-response'
     )
   );
 }
@@ -111,7 +117,7 @@ function cfas_filter_info() {
 }
 
 function cfas_filter_process($text, $filter) {
-  return preg_replace_callback('/<div.*data-flickr-album="(\d+)">[&nbsp;]*<\/div>/U', 'cfas_filter_process_callback', $text);
+  return preg_replace_callback('/<div.*data-flickr-album="([^"]+)">[&nbsp;]*<\/div>/U', 'cfas_filter_process_callback', $text);
 }
 
 function cfas_filter_tips($filter, $format, $long = FALSE) {
@@ -129,25 +135,37 @@ function cfas_filter_process_callback($matches) {
   return cfas_get_album($matches[1]);
 }
 
-function cfas_get_album($album_id) {
+function cfas_get_album($album_url) {
   module_load_include('php', 'cfas', 'includes/FlickrAlbum');
 
   $api_key = variable_get('cfas_flickr_api_key', false);
 
   // Bail and display error message of no API key has been set.
   if (!$api_key) {
-    return theme('cfas_error_message',
+    return theme('cfas_missing_api_key',
       array(
         'url' => $GLOBALS['base_path'] . '/admin/config/media/cfas'
       )
     );
   }
-  $flickr = new FlickrAlbum($api_key, $album_id);
+  $flickr = new FlickrAlbum($api_key, $album_url);
   $album = $flickr->getAlbum();
 
   // If no valid album, fetch using Flickr API and store record
   if (empty($album)) {
     $album = $flickr->fetchAlbum();
+  }
+
+  // Handle photoset not found
+  if (
+    isset($album['stat']) &&
+    $album['stat'] === 'fail'
+  ) {
+    return theme('cfas_invalid_response',
+      array(
+        'message' => $album['message']
+      )
+    );
   }
 
   // Either way, we now have an album. Now theme the images.
@@ -162,10 +180,16 @@ function cfas_get_album($album_id) {
  * Accept album id from POST data and return images
  */
 function cfas_album_submit() {
+  // Block non-authenticated users
+  if (user_is_anonymous()) {
+    print json_encode(array('error' => 'CFAS: Authentication required'));
+    drupal_exit();
+  }
+
   // Grab raw POST data
   $json = file_get_contents('php://input');
   $decoded = json_decode($json, true);
-  $output = cfas_get_album($decoded['album_id']);
+  $output = cfas_get_album($decoded['album_url']);
   print $output;
   drupal_exit();
 }

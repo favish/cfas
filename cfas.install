@@ -7,7 +7,7 @@ function cfas_schema() {
   $schema['cfas_albums'] = array(
     'description' => 'Stores data from Flickr API album responses.',
     'fields' => array(
-      'album_id' => array(
+      'album_url' => array(
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
@@ -26,7 +26,7 @@ function cfas_schema() {
         'description' => 'Serialized array of images.',
       )
     ),
-    'primary key' => array('album_id'),
+    'primary key' => array('album_url'),
   );
 
   return $schema;

@@ -1,15 +1,15 @@
 (function($, Drupal) {
   Drupal.cfas = {
-    fetchAlbumPreview: function(albumId, editor) {
+    fetchAlbumPreview: function(albumUrl, editor) {
       return $.ajax({
         type: "POST",
-        url: Drupal.settings.basePath + '/cfas-album',
+        url: Drupal.settings.basePath + 'cfas-album',
         data: JSON.stringify({
-          album_id: albumId
+          album_url: albumUrl
         })
       })
       .then(function(editor, data) {
-        var placeholder = $('[data-flickr-album="' + albumId + '"]', $(editor.editable().$));
+        var placeholder = $('[data-flickr-album="' + albumUrl + '"]', $(editor.editable().$));
         var preview = $('<div></div>');
         preview
           .addClass('cfas--preview')

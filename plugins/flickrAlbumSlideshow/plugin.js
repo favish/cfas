@@ -68,10 +68,12 @@
   function addSlideshowPreview(e) {
     var editor = e.editor;
     var $placeholder = $(editor.editable().$).find('[data-flickr-album]');
-    var albumId = $placeholder.attr('data-flickr-album');
-    Drupal.cfas.fetchAlbumPreview(albumId, editor)
-      .then(function() {
-        Drupal.attachBehaviors($(editor.editable().$));
-      });
+    $placeholder.each(function() {
+      var albumUrl = $(this).attr('data-flickr-album');
+      Drupal.cfas.fetchAlbumPreview(albumUrl, editor)
+        .then(function() {
+          Drupal.attachBehaviors($(editor.editable().$));
+        });
+    });
   }
 })(jQuery, Drupal, this);

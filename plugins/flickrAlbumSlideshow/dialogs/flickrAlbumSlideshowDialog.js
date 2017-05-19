@@ -11,16 +11,16 @@
           elements: [
             {
               type: 'text',
-              id: 'url',
+              id: 'albumUrl',
               label: 'Flickr album URL',
-              // validate: CKEDITOR.dialog.validate.regex(/https:\/\/www\.flickr\.com\/photos\/\w+\/albums\/\d+/, 'A valid Flickr album URL is needed.'),
-              setup: function(url) {
-                this.setValue(url);
+              validate: CKEDITOR.dialog.validate.regex(/https:\/\/www\.flickr\.com\/photos\/\w+\/(albums|sets)\/\d+/, 'A valid Flickr album URL is needed.'),
+              setup: function(albumUrl) {
+                this.setValue(albumUrl);
               }
             },
             {
               type: 'html',
-              html: '<p>Example: https://www.flickr.com/photos/user_id_here/albums/album_id_here</p>'
+              html: '<p>Example: https://www.flickr.com/photos/stys19850129/albums/72157679688020814</p>'
             }
           ]
         }
@@ -28,12 +28,11 @@
       onShow: function(e) {
         var selection = editor.getSelection().getStartElement();
         var placeholder = $(selection.$).closest('.cfas--placeholder');
-        var url = placeholder.attr('data-flickr-album');
-        this.setupContent(url);
+        var albumUrl = placeholder.attr('data-flickr-album');
+        this.setupContent(albumUrl);
       },
       onOk: function() {
-        var url = this.getValueOf('tab-basic', 'url');
-        var albumId = url.slice(url.lastIndexOf('/') + 1);
+        var albumUrl = this.getValueOf('tab-basic', 'albumUrl');
 
         // Remove previous placeholder
         var selection = editor.getSelection().getStartElement();
@@ -43,10 +42,10 @@
         // Create and add placeholder
         var placeholder = editor.document.createElement('div');
         placeholder.addClass('cfas--placeholder');
-        placeholder.setAttribute('data-flickr-album', albumId);
+        placeholder.setAttribute('data-flickr-album', albumUrl);
         editor.insertElement(placeholder);
 
-        Drupal.cfas.fetchAlbumPreview(albumId, editor)
+        Drupal.cfas.fetchAlbumPreview(albumUrl, editor)
           .then(function() {
             Drupal.attachBehaviors($(editor.editable().$));
           });
