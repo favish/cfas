@@ -1,0 +1,9 @@
+excludes.rsync
+.git
+.htaccess
+*.map
+*.log
+files/
+settings.local.php
+node_modules/
+bower_components/

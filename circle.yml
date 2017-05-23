@@ -1,0 +1,8 @@
+deployment:
+  master:
+    branch: master
+    commands:
+      - rsync -rlptD --progress --delete-after --exclude-from=excludes.rsync ./ gsb-programs@gsb.dev.favish.com:/var/www/gsb-dev/sites/all/modules/contrib/cfas/
+      - ssh gsb-programs@gsb.dev.favish.com 'cd /var/www/gsb-dev/sites/programs; drush cc all'
+      - ssh gsb-programs@gsb.dev.favish.com 'cd /var/www/gsb-dev/sites/articles; drush cc all'
+      - ssh gsb-programs@gsb.dev.favish.com 'cd /var/www/gsb-dev/sites/execed; drush cc all'
