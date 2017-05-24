@@ -21,12 +21,12 @@
               type: 'text',
               id: 'albumUrl',
               label: 'Flickr album URL',
-              validate: CKEDITOR.dialog.validate.regex(/https:\/\/www\.flickr\.com\/photos\/\w+\/(albums|sets)\/\d+/, 'A valid Flickr album URL is needed.'),
+              validate: CKEDITOR.dialog.validate.regex(/https:\/\/www\.flickr\.com\/photos\/([^\/]+)\/(?:albums|sets)\/(\d+)/, 'A valid Flickr album URL is needed.'),
               setup: function(container) {
                 var iframeSrc = container.find('iframe').attr('src');
                 if (typeof iframeSrc === 'undefined') { return; }
 
-                var matches = iframeSrc.match(/https:\/\/www\.flickr\.com\/(\w+)\/albums\/(\d+)\/player/);
+                var matches = iframeSrc.match(/https:\/\/www\.flickr\.com\/([^\/]+)\/albums\/(\d+)\/player/);
                 var albumUrl = 'https://www.flickr.com/photos/' + matches[1] + '/albums/' + matches[2];
                 this.setValue(albumUrl);
               }
@@ -45,7 +45,7 @@
       },
       onOk: function() {
         var albumUrl = this.getValueOf('tab-basic', 'albumUrl');
-        var matches = albumUrl.match(/https:\/\/www\.flickr\.com\/photos\/(\w+)\/(?:albums|sets)\/(\d+)/);
+        var matches = albumUrl.match(/https:\/\/www\.flickr\.com\/photos\/([^\/]+)\/(?:albums|sets)\/(\d+)/);
 
         // Create container
         var container = editor.document.createElement('div');
