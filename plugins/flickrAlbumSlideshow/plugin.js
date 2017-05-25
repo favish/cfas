@@ -8,7 +8,7 @@
         label: 'Insert Flickr album slideshow',
         command: 'cfasAddSlideshow',
         toolbar: 'insert',
-        icon: this.path + 'icons/flickr.png'
+        icon: this.path + '../../images/flickr-logo-black.png'
       });
 
       // Dialog definition
@@ -18,8 +18,8 @@
       editor.addCommand('cfasRemoveSlideshow', {
         exec: function(editor) {
           var selection = editor.getSelection().getStartElement();
-          var container = $(selection.$).closest('.cfas');
-          container.remove();
+          var placeholder = $(selection.$).closest('.cfas');
+          placeholder.remove();
         }
       });
 
@@ -31,20 +31,20 @@
             label: 'Edit Flickr album slideshow',
             command: 'cfasAddSlideshow',
             group: 'cfasGroup',
-            icon: this.path + 'icons/flickr.png'
+            icon: this.path + '../../images/flickr-logo-black.png'
           },
           cfasRemove: {
             label: 'Remove Flickr album slideshow',
             command: 'cfasRemoveSlideshow',
             group: 'cfasGroup',
-            icon: this.path + 'icons/flickr.png'
+            icon: this.path + '../../images/flickr-logo-black.png'
           }
         });
       }
 
       if (editor.contextMenu) {
         editor.contextMenu.addListener(function(element, selection) {
-          var container = $(element.$).closest('.cfas');
+          var placeholder = $(element.$).closest('.cfas');
 
           if (container.length) {
             return {

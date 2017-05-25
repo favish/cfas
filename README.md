@@ -6,5 +6,7 @@ Module Dependencies
 * WYSIWYG
 
 Setup
-* Add `<iframe>` to allowed HTML tags on your preferred text format.
-* Enable the CKEditor plugin - Flickr album slideshow - on your WYSIWYG profile.
+* Give 'Configure CFAS Module' permission to roles
+* Add API key at /admin/config/media/cfas
+
+Use aspect ratio of first image in gallery

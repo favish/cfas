@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Congratulations!\"",
-    "build": "gulp build"
+    "build": "gulp build",
+    "sass": "gulp sass",
+    "watch": "gulp watch"
   },
   "author": "",
   "license": "ISC",
