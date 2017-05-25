@@ -11,7 +11,7 @@ function cfas_schema() {
         'type' => 'varchar',
         'length' => 255,
         'not null' => TRUE,
-        'description' => "The album id.",
+        'description' => "The album URL.",
       ),
       'created' => array(
         'description' => 'The timestamp of the API response.',

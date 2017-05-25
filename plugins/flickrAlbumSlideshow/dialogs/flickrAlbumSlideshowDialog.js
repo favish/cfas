@@ -11,11 +11,19 @@
           elements: [
             {
               type: 'text',
+              id: 'title',
+              label: 'Album title',
+              setup: function(placeholder) {
+                this.setValue(placeholder.attr('data-flickr-title'));
+              }
+            },
+            {
+              type: 'text',
               id: 'albumUrl',
               label: 'Flickr album URL',
-              validate: CKEDITOR.dialog.validate.regex(/https:\/\/www\.flickr\.com\/photos\/\w+\/(albums|sets)\/\d+/, 'A valid Flickr album URL is needed.'),
-              setup: function(albumUrl) {
-                this.setValue(albumUrl);
+              validate: CKEDITOR.dialog.validate.regex(/https:\/\/www\.flickr\.com\/photos\/([^\/]+)\/(?:albums|sets)\/(\d+)/, 'A valid Flickr album URL is needed.'),
+              setup: function(placeholder) {
+                this.setValue(placeholder.attr('data-flickr-album'));
               }
             },
             {
@@ -27,28 +35,30 @@
       ],
       onShow: function(e) {
         var selection = editor.getSelection().getStartElement();
-        var placeholder = $(selection.$).closest('.cfas--placeholder');
-        var albumUrl = placeholder.attr('data-flickr-album');
-        this.setupContent(albumUrl);
+        var placeholder = $(selection.$).closest('.cfas');
+        this.setupContent(placeholder);
       },
       onOk: function() {
+        var title = this.getValueOf('tab-basic', 'title');
         var albumUrl = this.getValueOf('tab-basic', 'albumUrl');
 
         // Remove previous placeholder
-        var selection = editor.getSelection().getStartElement();
-        var placeholder = $(selection.$).closest('.cfas--placeholder');
-        placeholder.remove();
+        // var selection = editor.getSelection().getStartElement();
+        // var placeholder = $(selection.$).closest('.cfas--placeholder');
+        // placeholder.remove();
 
         // Create and add placeholder
         var placeholder = editor.document.createElement('div');
-        placeholder.addClass('cfas--placeholder');
-        placeholder.setAttribute('data-flickr-album', albumUrl);
+        placeholder.addClass('cfas');
+        placeholder
+          .setAttribute('data-flickr-title', title)
+          .setAttribute('data-flickr-album', albumUrl);
         editor.insertElement(placeholder);
 
-        Drupal.cfas.fetchAlbumPreview(albumUrl, editor)
-          .then(function() {
-            Drupal.attachBehaviors($(editor.editable().$));
-          });
+        // Drupal.cfas.fetchAlbumPreview(albumUrl, editor)
+        //   .then(function() {
+        //     Drupal.attachBehaviors($(editor.editable().$));
+        //   });
       }
     };
   });

@@ -18,7 +18,7 @@
       editor.addCommand('cfasRemoveSlideshow', {
         exec: function(editor) {
           var selection = editor.getSelection().getStartElement();
-          var placeholder = $(selection.$).closest('.cfas--placeholder');
+          var placeholder = $(selection.$).closest('.cfas');
           placeholder.remove();
         }
       });
@@ -44,7 +44,7 @@
 
       if (editor.contextMenu) {
         editor.contextMenu.addListener(function(element, selection) {
-          var placeholder = $(element.$).closest('.cfas--placeholder');
+          var placeholder = $(element.$).closest('.cfas');
 
           if (placeholder.length) {
             return {
@@ -57,23 +57,23 @@
 
       // Add additional stylesheets
       editor.addContentsCss(this.path + '../../css/cfas.css');
-      editor.addContentsCss(Drupal.settings.basePath + Drupal.settings.cfas.flexsliderCss);
+      // editor.addContentsCss(Drupal.settings.basePath + Drupal.settings.cfas.flexsliderCss);
       editor.addContentsCss(Drupal.settings.basePath + '/modules/system/system.messages.css');
     }
   });
 
   // Display preview while editing
-  CKEDITOR.on('instanceReady', addSlideshowPreview);
+  // CKEDITOR.on('instanceReady', addSlideshowPreview);
 
-  function addSlideshowPreview(e) {
-    var editor = e.editor;
-    var $placeholder = $(editor.editable().$).find('[data-flickr-album]');
-    $placeholder.each(function() {
-      var albumUrl = $(this).attr('data-flickr-album');
-      Drupal.cfas.fetchAlbumPreview(albumUrl, editor)
-        .then(function() {
-          Drupal.attachBehaviors($(editor.editable().$));
-        });
-    });
-  }
+  // function addSlideshowPreview(e) {
+  //   var editor = e.editor;
+  //   var $placeholder = $(editor.editable().$).find('[data-flickr-album]');
+  //   $placeholder.each(function() {
+  //     var albumUrl = $(this).attr('data-flickr-album');
+  //     Drupal.cfas.fetchAlbumPreview(albumUrl, editor)
+  //       .then(function() {
+  //         Drupal.attachBehaviors($(editor.editable().$));
+  //       });
+  //   });
+  // }
 })(jQuery, Drupal, this);

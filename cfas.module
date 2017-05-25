@@ -101,40 +101,6 @@ function cfas_wysiwyg_editor_settings_alter(&$settings, $context) {
   }
 }
 
-/**
- * Implements hook_filter_info().
- */
-function cfas_filter_info() {
-  $filters['cfas'] = array(
-    'title' => t('Embed Flickr album slideshow'),
-    'description' => t('By including a div with a data-flickr-album attribute, this filter will embed the a Flickr album slideshow'),
-    'process callback' => 'cfas_filter_process',
-    'tips callback'  => 'cfas_filter_tips',
-    'cache' => FALSE,
-  );
-
-  return $filters;
-}
-
-function cfas_filter_process($text, $filter) {
-  return preg_replace_callback('/<div.*data-flickr-album="([^"]+)">[&nbsp;]*<\/div>/U', 'cfas_filter_process_callback', $text);
-}
-
-function cfas_filter_tips($filter, $format, $long = FALSE) {
-  return t('Insert a Flickr album slideshow.');
-}
-
-function cfas_filter_process_callback($matches) {
-  // Flexslider deps
-  drupal_add_css(libraries_get_path('flexslider') . '/flexslider.css');
-  drupal_add_js(libraries_get_path('flexslider') . '/jquery.flexslider-min.js');
-  // CFAS deps
-  drupal_add_js(drupal_get_path('module', 'cfas') . '/js/cfas--flexslider.js');
-  drupal_add_css(drupal_get_path('module', 'cfas') . '/css/cfas.css');
-
-  return cfas_get_album($matches[1]);
-}
-
 function cfas_get_album($album_url) {
   module_load_include('php', 'cfas', 'includes/FlickrAlbum');
 
@@ -195,28 +161,12 @@ function cfas_album_submit() {
 }
 
 /**
- * Implements hook_element_info_alter().
+ * Implements template_preprocess_page()
  */
-function cfas_element_info_alter(&$types) {
-  $types['text_format']['#pre_render'][] = 'cfas_pre_render_text_format';
-}
-
-function cfas_pre_render_text_format($element) {
+function cfas_preprocess_page(&$vars) {
   // Flexslider deps
   $element['#attached']['js'][] = libraries_get_path('flexslider') . '/jquery.flexslider-min.js';
   // CFAS deps
   $element['#attached']['js'][] = drupal_get_path('module', 'cfas') . '/js/cfas--flexslider.js';
   $element['#attached']['js'][] = drupal_get_path('module', 'cfas') . '/js/cfas--drupal.js';
-  $element['#attached']['js'][] = drupal_get_path('module', 'cfas') . '/js/cfas--form-submit.js';
-
-  return $element;
-}
-
-/**
- * Implements template_preprocess_page()
- */
-function cfas_preprocess_page(&$vars) {
-  drupal_add_js(array('cfas' => array(
-    'flexsliderCss' => libraries_get_path('flexslider') . '/flexslider.css',
-  )), 'setting');
 }

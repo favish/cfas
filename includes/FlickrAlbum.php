@@ -36,7 +36,7 @@ class FlickrAlbum {
       'photoset_id' => array_pop(explode('/', $this->album_url)),
       'format' => 'json',
       'nojsoncallback' => 1,
-      'extras' => 'url_m'
+      'extras' => 'url_o'
     );
 
     $url = array_reduce(
