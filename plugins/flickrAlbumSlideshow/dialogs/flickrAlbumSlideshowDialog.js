@@ -43,11 +43,11 @@
         var albumUrl = this.getValueOf('tab-basic', 'albumUrl');
 
         // Remove previous placeholder
-        // var selection = editor.getSelection().getStartElement();
-        // var placeholder = $(selection.$).closest('.cfas--placeholder');
-        // placeholder.remove();
+        var selection = editor.getSelection().getStartElement();
+        var placeholder = $(selection.$).closest('.cfas');
+        placeholder.remove();
 
-        // Create and add placeholder
+        // Create and add new placeholder
         var placeholder = editor.document.createElement('div');
         placeholder.addClass('cfas');
         placeholder

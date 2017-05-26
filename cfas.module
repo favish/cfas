@@ -7,7 +7,7 @@ function cfas_permission() {
   return array(
     'configure_cfas' => array(
       'title' => t('Configure CFAS Module'),
-      'description' => t('Allows users to configure the CFAS module.'),
+      'description' => t('Add your Flickr API key.'),
       'restrict access' => TRUE,
     ),
   );
@@ -20,7 +20,7 @@ function cfas_menu() {
   $items = array();
 
   $items['admin/config/media/cfas'] = array(
-    'title' => 'CKEditor Flickr Album Slideshow',
+    'title' => 'CFAS',
     'description' => 'Configuration for the CFAS module',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('cfas_admin_form'),
@@ -53,30 +53,6 @@ function cfas_admin_form($form, &$form_state) {
 /**
  * Implements hook_wysiwyg_plugin().
  */
-function cfas_theme($existing, $type, $theme, $path) {
-  return array(
-    'cfas_slideshow' => array(
-      'vars' => array(
-        'images' => null
-      ),
-      'template' => 'templates/cfas-slideshow'
-    ),
-    'cfas_missing_api_key' => array(
-      'vars' => array(),
-      'template' => 'templates/cfas-missing-api-key'
-    ),
-    'cfas_invalid_response' => array(
-      'vars' => array(
-        'message' => null
-      ),
-      'template' => 'templates/cfas-invalid-response'
-    )
-  );
-}
-
-/**
- * Implements hook_wysiwyg_plugin().
- */
 function cfas_wysiwyg_plugin($editor, $version) {
   $plugins = array();
   if ($editor == 'ckeditor' && version_compare($version, '4.0', '>=')) {
@@ -98,6 +74,7 @@ function cfas_wysiwyg_plugin($editor, $version) {
 function cfas_wysiwyg_editor_settings_alter(&$settings, $context) {
   if ($context['profile']->editor == 'ckeditor') {
     $settings['allowedContent'] = TRUE;
+    $settings['fillEmptyBlocks'] = FALSE;
   }
 }
 
@@ -108,10 +85,8 @@ function cfas_get_album($album_url) {
 
   // Bail and display error message of no API key has been set.
   if (!$api_key) {
-    return theme('cfas_missing_api_key',
-      array(
-        'url' => $GLOBALS['base_path'] . '/admin/config/media/cfas'
-      )
+    return array(
+      'error' => 'CFAS: Your Flickr API key is missing.'
     );
   }
   $flickr = new FlickrAlbum($api_key, $album_url);
@@ -122,23 +97,19 @@ function cfas_get_album($album_url) {
     $album = $flickr->fetchAlbum();
   }
 
-  // Handle photoset not found
+  // Handle error responses from Flickr API
   if (
     isset($album['stat']) &&
     $album['stat'] === 'fail'
   ) {
-    return theme('cfas_invalid_response',
-      array(
-        'message' => $album['message']
-      )
+    return array(
+      'error' => 'CFAS: ' . $album['message']
     );
   }
 
-  // Either way, we now have an album. Now theme the images.
-  return theme('cfas_slideshow',
-    array(
-      'images' => unserialize($album['images'])
-    )
+  // Either way, we now have images.
+  return array(
+    'images' => unserialize($album['images'])
   );
 }
 
@@ -156,7 +127,7 @@ function cfas_album_submit() {
   $json = file_get_contents('php://input');
   $decoded = json_decode($json, true);
   $output = cfas_get_album($decoded['album_url']);
-  print $output;
+  print drupal_json_output($output);
   drupal_exit();
 }
 
@@ -165,8 +136,10 @@ function cfas_album_submit() {
  */
 function cfas_preprocess_page(&$vars) {
   // Flexslider deps
-  $element['#attached']['js'][] = libraries_get_path('flexslider') . '/jquery.flexslider-min.js';
+  drupal_add_js(libraries_get_path('flexslider') . '/jquery.flexslider-min.js');
+  drupal_add_css(libraries_get_path('flexslider') . '/flexslider.css');
   // CFAS deps
-  $element['#attached']['js'][] = drupal_get_path('module', 'cfas') . '/js/cfas--flexslider.js';
-  $element['#attached']['js'][] = drupal_get_path('module', 'cfas') . '/js/cfas--drupal.js';
+  drupal_add_css(drupal_get_path('module', 'cfas') . '/css/cfas.css');
+  drupal_add_js(drupal_get_path('module', 'cfas') . '/js/cfas--build-slideshow.js');
+//  drupal_add_js(drupal_get_path('module', 'cfas') . '/js/cfas--drupal.js');
 }

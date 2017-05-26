@@ -57,8 +57,6 @@
 
       // Add additional stylesheets
       editor.addContentsCss(this.path + '../../css/cfas.css');
-      // editor.addContentsCss(Drupal.settings.basePath + Drupal.settings.cfas.flexsliderCss);
-      editor.addContentsCss(Drupal.settings.basePath + '/modules/system/system.messages.css');
     }
   });
 

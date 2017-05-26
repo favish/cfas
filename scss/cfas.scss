@@ -1,3 +1,35 @@
-.cfas.flexslider .flex-direction-nav a:before {
-  line-height: 0.95em;
+.cfas {
+  margin-bottom: 40px;
+  .flexslider {
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    background-color: #212124;
+    .flex-direction-nav a:before {
+      line-height: 0.95em;
+      text-shadow: 0 0 7px rgba(255, 255, 255, 0.4);
+    }
+    .flex-prev:before {
+      transform: translate(3px, 3px);
+    }
+    .flex-next:before {
+      transform: translate(-3px, 3px);
+    }
+  }
+  .cfas--slide {
+    position: relative;
+    padding-bottom: 62.66%;
+  }
+  .cfas--faux-image {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    &.cfas--faux-image--contain {
+      background-size: contain;
+    }
+  }
 }

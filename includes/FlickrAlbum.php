@@ -8,6 +8,8 @@ class FlickrAlbum {
 
   protected $time_limit = 300;
 
+  protected $image_size_type = 'o';
+
   public function __construct($api_key, $album_url) {
     $this->api_key = $api_key;
     $this->album_url = $album_url;
@@ -36,7 +38,7 @@ class FlickrAlbum {
       'photoset_id' => array_pop(explode('/', $this->album_url)),
       'format' => 'json',
       'nojsoncallback' => 1,
-      'extras' => 'url_o'
+      'extras' => 'url_' . $this->image_size_type
     );
 
     $url = array_reduce(
@@ -67,9 +69,14 @@ class FlickrAlbum {
       return (array) $decoded_resp;
     }
 
+    $image_size_type = $this->image_size_type;
     // Handle valid response
-    $images = array_map(function($item) {
-      return $item->url_m;
+    $images = array_map(function($item) use ($image_size_type) {
+      $image = new stdClass();
+      $image->url = $item->{'url_' . $image_size_type};
+      $image->width = $item->{'width_' . $image_size_type};
+      $image->height = $item->{'height_' . $image_size_type};
+      return $image;
     }, $decoded_resp->photoset->photo);
 
     $album = array(
