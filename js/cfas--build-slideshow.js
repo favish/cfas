@@ -4,7 +4,9 @@
     attach: function (context, settings) {
 
       var pluginName = 'flickrAlbumSlideshow';
-      var defaults = {};
+      var defaults = {
+        aspectRatioPercentage: 62.66
+      };
 
       function FlickrAlbumSlideshow(element, options) {
         this.element = $(element);
@@ -15,12 +17,22 @@
       FlickrAlbumSlideshow.prototype = {
         init: function() {
           var albumUrl = this.element.attr('data-flickr-album');
-          this.fetchImages(albumUrl)
+          this.addLoadingPlaceholder()
+            .fetchImages(albumUrl)
             .then(this.handleErrors)
             .then(this.buildSlideshowHTML.bind(this))
             .then(this.flexslider.bind(this))
+            .then(this.fadeInSlideshow.bind(this))
+            .then(this.removeLoadingPlaceholder.bind(this))
             .then(this.setBackgroundSize.bind(this))
             .then(this.handleEventResize.bind(this));
+        },
+        addLoadingPlaceholder: function() {
+          this.element.css({
+            height: this.element.width() * (this.settings.aspectRatioPercentage / 100)
+          });
+
+          return this;
         },
         fetchImages: function(albumUrl) {
           return $.ajax({
@@ -33,17 +45,17 @@
         },
         handleErrors: function(data) {
           if (data.hasOwnProperty('error')) {
-            console.error(data.error);
+            throw new Error(data.error);
           }
           return data.images;
         },
         buildSlideshowHTML: function(images) {
           var slides = this.buildSlides(images);
-          var slider = $('<div></div>');
-          slider.addClass('flexslider');
-          slider.append(slides);
+          var slideshow = $('<div></div>');
+          slideshow.addClass('flexslider');
+          slideshow.append(slides);
 
-          this.element.append(slider);
+          this.element.append(slideshow);
 
           return this;
         },
@@ -90,6 +102,18 @@
             } else {
               image.addClass('cfas--faux-image--contain');
             }
+          });
+
+          return this;
+        },
+        fadeInSlideshow: function() {
+          this.element.addClass('cfas--slideshow-has-loaded');
+
+          return this;
+        },
+        removeLoadingPlaceholder: function() {
+          this.element.css({
+            height: ''
           });
 
           return this;
