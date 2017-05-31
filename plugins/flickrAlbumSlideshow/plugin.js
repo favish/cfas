@@ -8,7 +8,7 @@
         label: 'Insert Flickr album slideshow',
         command: 'cfasAddSlideshow',
         toolbar: 'insert',
-        icon: this.path + 'icons/flickr.png'
+        icon: this.path + '../../images/flickr-logo-black.png'
       });
 
       // Dialog definition
@@ -31,13 +31,13 @@
             label: 'Edit Flickr album slideshow',
             command: 'cfasAddSlideshow',
             group: 'cfasGroup',
-            icon: this.path + 'icons/flickr.png'
+            icon: this.path + '../../images/flickr-logo-black.png'
           },
           cfasRemove: {
             label: 'Remove Flickr album slideshow',
             command: 'cfasRemoveSlideshow',
             group: 'cfasGroup',
-            icon: this.path + 'icons/flickr.png'
+            icon: this.path + '../../images/flickr-logo-black.png'
           }
         });
       }
