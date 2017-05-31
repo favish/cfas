@@ -59,19 +59,4 @@
       editor.addContentsCss(this.path + '../../css/cfas.css');
     }
   });
-
-  // Display preview while editing
-  // CKEDITOR.on('instanceReady', addSlideshowPreview);
-
-  // function addSlideshowPreview(e) {
-  //   var editor = e.editor;
-  //   var $placeholder = $(editor.editable().$).find('[data-flickr-album]');
-  //   $placeholder.each(function() {
-  //     var albumUrl = $(this).attr('data-flickr-album');
-  //     Drupal.cfas.fetchAlbumPreview(albumUrl, editor)
-  //       .then(function() {
-  //         Drupal.attachBehaviors($(editor.editable().$));
-  //       });
-  //   });
-  // }
 })(jQuery, Drupal, this);

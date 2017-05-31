@@ -15,9 +15,9 @@
               label: 'Aspect ratio',
               items: [
                 ['Auto-detect from first image', 'auto'],
-                ['4:3'],
-                ['3:2'],
-                ['1:1'],
+                ['4x3'],
+                ['3x2'],
+                ['1x1'],
               ],
               'default': 'auto',
               setup: function(placeholder) {
