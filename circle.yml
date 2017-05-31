@@ -1,0 +1,12 @@
+machine:
+  node:
+    version: 5.1.0
+dependencies:
+  post:
+    - npm i
+    - npm run build
+deployment:
+  master:
+    branch: master
+    commands:
+      - rsync -rlptD --progress --delete-after --exclude-from=excludes.rsync ./ gsb-programs@gsb.dev.favish.com:/var/www/gsb-dev/sites/all/modules/contrib/gsb_cta/

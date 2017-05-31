@@ -1,0 +1,4 @@
+excludes.rsync
+.git
+node_modules/
+.gitignore
