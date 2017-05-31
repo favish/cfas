@@ -2,7 +2,7 @@
   CKEDITOR.dialog.add('cfasShowDialog', function(editor) {
     return {
       title: 'Insert Flickr album slideshow',
-      minWidth: 300,
+      minWidth: 400,
       minHeight: 200,
       contents: [
         {
@@ -50,7 +50,6 @@
       onOk: function() {
         var aspectRatio = this.getValueOf('tab-basic', 'aspectRatio');
         var albumUrl = this.getValueOf('tab-basic', 'albumUrl');
-        var matches = albumUrl.match(/https:\/\/www\.flickr\.com\/photos\/([^\/]+)\/(?:albums|sets)\/(\d+)/);
 
         // Remove previous placeholder
         var selection = editor.getSelection().getStartElement();

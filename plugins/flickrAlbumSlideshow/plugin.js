@@ -46,7 +46,7 @@
         editor.contextMenu.addListener(function(element, selection) {
           var placeholder = $(element.$).closest('.cfas');
 
-          if (container.length) {
+          if (placeholder.length) {
             return {
               cfasEdit: CKEDITOR.TRISTATE_ON,
               cfasRemove: CKEDITOR.TRISTATE_ON
