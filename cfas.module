@@ -117,18 +117,26 @@ function cfas_get_album($album_url) {
  * Accept album id from POST data and return images
  */
 function cfas_album_submit() {
-  // Block non-authenticated users
-  if (user_is_anonymous()) {
-    print json_encode(array('error' => 'CFAS: Authentication required'));
-    drupal_exit();
-  }
-
   // Grab raw POST data
   $json = file_get_contents('php://input');
   $decoded = json_decode($json, true);
+
+  // Validate presence of album_url and that is it an integer
+  if (
+    !isset($decoded['album_url']) ||
+    !cfas_is_valid_flickr_album_url($decoded['album_url'])
+  ) {
+    print drupal_json_output(array('error' => 'CFAS: Invalid album URL'));
+    drupal_exit();
+  }
+
   $output = cfas_get_album($decoded['album_url']);
   print drupal_json_output($output);
   drupal_exit();
+}
+
+function cfas_is_valid_flickr_album_url($url) {
+  return preg_match('/https:\/\/www\.flickr\.com\/photos\/([^\/]+)\/(?:albums|sets)\/(\d+)/', $url);
 }
 
 /**
@@ -141,5 +149,4 @@ function cfas_preprocess_page(&$vars) {
   // CFAS deps
   drupal_add_css(drupal_get_path('module', 'cfas') . '/css/cfas.css');
   drupal_add_js(drupal_get_path('module', 'cfas') . '/js/cfas--build-slideshow.js');
-//  drupal_add_js(drupal_get_path('module', 'cfas') . '/js/cfas--drupal.js');
 }

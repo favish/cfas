@@ -10,11 +10,20 @@
           label: 'Basic Settings',
           elements: [
             {
-              type: 'text',
-              id: 'title',
-              label: 'Album title',
+              type: 'radio',
+              id: 'aspectRatio',
+              label: 'Aspect ratio',
+              items: [
+                ['Auto-detect from first image', 'auto'],
+                ['4:3'],
+                ['3:2'],
+                ['1:1'],
+              ],
+              'default': 'auto',
               setup: function(placeholder) {
-                this.setValue(placeholder.attr('data-flickr-title'));
+                if (typeof placeholder.attr('data-flickr-aspect-ratio') !== 'undefined') {
+                  this.setValue(placeholder.attr('data-flickr-aspect-ratio'));
+                }
               }
             },
             {
@@ -39,7 +48,7 @@
         this.setupContent(placeholder);
       },
       onOk: function() {
-        var title = this.getValueOf('tab-basic', 'title');
+        var aspectRatio = this.getValueOf('tab-basic', 'aspectRatio');
         var albumUrl = this.getValueOf('tab-basic', 'albumUrl');
 
         // Remove previous placeholder
@@ -51,14 +60,9 @@
         var placeholder = editor.document.createElement('div');
         placeholder.addClass('cfas');
         placeholder
-          .setAttribute('data-flickr-title', title)
+          .setAttribute('data-flickr-aspect-ratio', aspectRatio)
           .setAttribute('data-flickr-album', albumUrl);
         editor.insertElement(placeholder);
-
-        // Drupal.cfas.fetchAlbumPreview(albumUrl, editor)
-        //   .then(function() {
-        //     Drupal.attachBehaviors($(editor.editable().$));
-        //   });
       }
     };
   });

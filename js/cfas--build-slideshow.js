@@ -50,7 +50,9 @@
           return data.images;
         },
         buildSlideshowHTML: function(images) {
-          var slides = this.buildSlides(images);
+          var aspectRatio = this.getAspectRatio(images);
+
+          var slides = this.buildSlides(images, aspectRatio);
           var slideshow = $('<div></div>');
           slideshow.addClass('flexslider');
           slideshow.append(slides);
@@ -58,6 +60,21 @@
           this.element.append(slideshow);
 
           return this;
+        },
+        getAspectRatio: function(images) {
+          var aspectRatio;
+
+          if (this.isValidAspectRatio(this.element.data('flickr-aspect-ratio'))) {
+            var dims = this.element.data('flickr-aspect-ratio').split('x');
+            aspectRatio = dims[1] / dims[0] * 100;
+          } else {
+            aspectRatio = images[0].height / images[0].width * 100;
+          }
+
+          return aspectRatio;
+        },
+        isValidAspectRatio: function(value) {
+          return value.match(/^\d{1}x\d{1}/) !== null;
         },
         flexslider: function() {
           this.element.find('.flexslider').flexslider({
@@ -69,11 +86,11 @@
         },
         /**
          * Takes an array of image objects. Returns li's containing images.
-         * @param images
          */
-        buildSlides: function(images) {
+        buildSlides: function(images, aspectRatio) {
           var items = images.map(function(item) {
             var li = $('<li></li>');
+            li.css('padding-bottom', aspectRatio + '%');
             li.addClass('cfas--slide');
 
             var img = $('<div></div>');
