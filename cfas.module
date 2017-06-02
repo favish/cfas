@@ -143,10 +143,16 @@ function cfas_is_valid_flickr_album_url($url) {
  * Implements template_preprocess_page()
  */
 function cfas_preprocess_page(&$vars) {
-  // Flexslider deps
-  drupal_add_js(libraries_get_path('flexslider') . '/jquery.flexslider-min.js');
-  drupal_add_css(libraries_get_path('flexslider') . '/flexslider.css');
-  // CFAS deps
+  if (!path_is_admin($_GET['q'])) {
+    // Unite Gallery
+    drupal_add_js(libraries_get_path('unitegallery') . '/dist/js/unitegallery.js');
+    drupal_add_js(libraries_get_path('unitegallery') . '/dist/themes/default/ug-theme-default.js');
+    drupal_add_css(libraries_get_path('unitegallery') . '/dist/css/unite-gallery.css');
+
+    // CFAS
+    drupal_add_js(drupal_get_path('module', 'cfas') . '/js/cfas--build-slideshow.js');
+  }
+
+  // CFAS - needed for both node display mode and CKEditor context menu, which is outside editor iframe
   drupal_add_css(drupal_get_path('module', 'cfas') . '/css/cfas.css');
-  drupal_add_js(drupal_get_path('module', 'cfas') . '/js/cfas--build-slideshow.js');
 }

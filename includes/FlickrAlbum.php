@@ -8,7 +8,7 @@ class FlickrAlbum {
 
   protected $time_limit = 300;
 
-  protected $image_size_type = 'o';
+  protected $image_size_type = 'z';
 
   public function __construct($api_key, $album_url) {
     $this->api_key = $api_key;
@@ -74,8 +74,7 @@ class FlickrAlbum {
     $images = array_map(function($item) use ($image_size_type) {
       $image = new stdClass();
       $image->url = $item->{'url_' . $image_size_type};
-      $image->width = $item->{'width_' . $image_size_type};
-      $image->height = $item->{'height_' . $image_size_type};
+      $image->title = $item->title;
       return $image;
     }, $decoded_resp->photoset->photo);
 

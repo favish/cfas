@@ -4,9 +4,7 @@
     attach: function (context, settings) {
 
       var pluginName = 'flickrAlbumSlideshow';
-      var defaults = {
-        aspectRatioPercentage: 62.66
-      };
+      var defaults = {};
 
       function FlickrAlbumSlideshow(element, options) {
         this.element = $(element);
@@ -17,22 +15,10 @@
       FlickrAlbumSlideshow.prototype = {
         init: function() {
           var albumUrl = this.element.attr('data-flickr-album');
-          this.addLoadingPlaceholder()
-            .fetchImages(albumUrl)
+          this.fetchImages(albumUrl)
             .then(this.handleErrors)
             .then(this.buildSlideshowHTML.bind(this))
-            .then(this.flexslider.bind(this))
-            .then(this.fadeInSlideshow.bind(this))
-            .then(this.removeLoadingPlaceholder.bind(this))
-            .then(this.setBackgroundSize.bind(this))
-            .then(this.handleEventResize.bind(this));
-        },
-        addLoadingPlaceholder: function() {
-          this.element.css({
-            height: this.element.width() * (this.settings.aspectRatioPercentage / 100)
-          });
-
-          return this;
+            .then(this.applyGallery.bind(this));
         },
         fetchImages: function(albumUrl) {
           return $.ajax({
@@ -50,36 +36,24 @@
           return data.images;
         },
         buildSlideshowHTML: function(images) {
-          var aspectRatio = this.getAspectRatio(images);
-
-          var slides = this.buildSlides(images, aspectRatio);
+          var slides = this.buildSlides(images);
           var slideshow = $('<div></div>');
-          slideshow.addClass('flexslider');
+
+          // This id is unfortunately required by Unite Gallery. Plus, a unique id is needed if more than one slideshow are present on a page.
+          slideshow.attr('id', 'cfas--slideshow--' + Math.random().toString().substring(2));
+          slideshow.addClass('cfas--slideshow');
           slideshow.append(slides);
 
           this.element.append(slideshow);
 
           return this;
         },
-        getAspectRatio: function(images) {
-          var aspectRatio;
-
-          if (this.isValidAspectRatio(this.element.data('flickr-aspect-ratio'))) {
-            var dims = this.element.data('flickr-aspect-ratio').split('x');
-            aspectRatio = dims[1] / dims[0] * 100;
-          } else {
-            aspectRatio = images[0].height / images[0].width * 100;
-          }
-
-          return aspectRatio;
-        },
-        isValidAspectRatio: function(value) {
-          return value.match(/^\d{1}x\d{1}/) !== null;
-        },
-        flexslider: function() {
-          this.element.find('.flexslider').flexslider({
-            slideshow: false,
-            controlNav: false
+        applyGallery: function() {
+          this.element.find('.cfas--slideshow').unitegallery({
+            slider_scale_mode: 'fitvert',
+            gallery_autoplay: true,
+            gallery_mousewheel_role: 'none',
+            gallery_images_preload_type: 'minimal'
           });
 
           return this;
@@ -87,56 +61,15 @@
         /**
          * Takes an array of image objects. Returns li's containing images.
          */
-        buildSlides: function(images, aspectRatio) {
-          var items = images.map(function(item) {
-            var li = $('<li></li>');
-            li.css('padding-bottom', aspectRatio + '%');
-            li.addClass('cfas--slide');
-
-            var img = $('<div></div>');
+        buildSlides: function(images) {
+          return images.map(function(item) {
+            var img = $('<img/>');
             img.addClass('cfas--faux-image');
-            img.css('background-image', 'url(' + item.url + ')');
-            img.attr('data-width', item.width);
-            img.attr('data-height', item.height);
-            li.append(img);
-            return li;
+            img.attr('src', item.url);
+            img.attr('data-description', item.title);
+
+            return img;
           });
-
-          var list = $('<ul></ul>');
-          list.addClass('slides');
-          list.append(items);
-
-          return list;
-        },
-        setBackgroundSize: function() {
-          $('.cfas--slide', this.element).each(function() {
-            var image = $(this).find('.cfas--faux-image');
-            if (
-              image.attr('data-width') < image.width() &&
-              image.attr('data-height') < image.height()
-            ) {
-              image.removeClass('cfas--faux-image--contain');
-            } else {
-              image.addClass('cfas--faux-image--contain');
-            }
-          });
-
-          return this;
-        },
-        fadeInSlideshow: function() {
-          this.element.addClass('cfas--slideshow-has-loaded');
-
-          return this;
-        },
-        removeLoadingPlaceholder: function() {
-          this.element.css({
-            height: ''
-          });
-
-          return this;
-        },
-        handleEventResize: function() {
-          $(window).on('resize', this.setBackgroundSize);
         }
       };
 

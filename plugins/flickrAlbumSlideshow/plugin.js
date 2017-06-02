@@ -48,8 +48,8 @@
 
           if (placeholder.length) {
             return {
-              cfasEdit: CKEDITOR.TRISTATE_ON,
-              cfasRemove: CKEDITOR.TRISTATE_ON
+              cfasEdit: CKEDITOR.TRISTATE_OFF,
+              cfasRemove: CKEDITOR.TRISTATE_OFF
             };
           }
         });
