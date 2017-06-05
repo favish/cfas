@@ -4,11 +4,14 @@
     attach: function (context, settings) {
 
       var pluginName = 'flickrAlbumSlideshow';
-      var defaults = {};
+      var defaults = {
+        galleryWidth: 900
+      };
 
       function FlickrAlbumSlideshow(element, options) {
         this.element = $(element);
         this.settings = $.extend({}, defaults, options);
+        this.images = null;
         this.init();
       }
 
@@ -16,7 +19,7 @@
         init: function() {
           var albumUrl = this.element.attr('data-flickr-album');
           this.fetchImages(albumUrl)
-            .then(this.handleErrors)
+            .then(this.handleErrors.bind(this))
             .then(this.buildSlideshowHTML.bind(this))
             .then(this.applyGallery.bind(this));
         },
@@ -33,6 +36,7 @@
           if (data.hasOwnProperty('error')) {
             throw new Error(data.error);
           }
+          this.images = data.images;
           return data.images;
         },
         buildSlideshowHTML: function(images) {
@@ -49,24 +53,51 @@
           return this;
         },
         applyGallery: function() {
+          var aspectRatio = this.getAspectRatio();
+
           this.element.find('.cfas--slideshow').unitegallery({
-            slider_scale_mode: 'fitvert',
-            gallery_autoplay: true,
+            gallery_theme: 'slider',
+            gallery_autoplay: false,
             gallery_mousewheel_role: 'none',
-            gallery_images_preload_type: 'minimal'
+            slider_enable_bullets: false,
+            slider_enable_fullscreen_button: true,
+            gallery_width: this.settings.galleryWidth,
+            // Dynamically set to specify overall aspect ratio
+            gallery_height: this.settings.galleryWidth / aspectRatio
           });
 
           return this;
         },
+        getAspectRatio: function() {
+          var aspectRatio;
+
+          if (this.isValidAspectRatio(this.element.data('flickr-aspect-ratio'))) {
+            var dims = this.element.data('flickr-aspect-ratio').split('x');
+            aspectRatio = dims[0] / dims[1];
+          } else {
+            aspectRatio = this.images[0].width / this.images[0].height;
+          }
+
+          return aspectRatio;
+        },
         /**
-         * Takes an array of image objects. Returns li's containing images.
+         * Determines if value has the correct format (e.g: 3x2, 4x3) so that it may be effectively parsed later.
+         * @param value
+         * @returns {boolean}
+         */
+        isValidAspectRatio: function(value) {
+          return value.match(/^\d{1}x\d{1}/) !== null;
+        },
+        /**
+         * Takes an image data and returns images tags with attributes necessary for lazy loading.
+         * @returns {array}
          */
         buildSlides: function(images) {
           return images.map(function(item) {
             var img = $('<img/>');
             img.addClass('cfas--faux-image');
-            img.attr('src', item.url);
-            img.attr('data-description', item.title);
+            img.attr('src', Drupal.settings.basePath + Drupal.settings.cfas.path + '/images/thumb.jpg');
+            img.attr('data-image', item.url);
 
             return img;
           });

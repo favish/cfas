@@ -144,9 +144,14 @@ function cfas_is_valid_flickr_album_url($url) {
  */
 function cfas_preprocess_page(&$vars) {
   if (!path_is_admin($_GET['q'])) {
+    // Add module path to Drupal settings
+    drupal_add_js(array('cfas' => array(
+      'path' => drupal_get_path('module', 'cfas'),
+    )), 'setting');
+
     // Unite Gallery
     drupal_add_js(libraries_get_path('unitegallery') . '/dist/js/unitegallery.js');
-    drupal_add_js(libraries_get_path('unitegallery') . '/dist/themes/default/ug-theme-default.js');
+    drupal_add_js(libraries_get_path('unitegallery') . '/dist/themes/slider/ug-theme-slider.js');
     drupal_add_css(libraries_get_path('unitegallery') . '/dist/css/unite-gallery.css');
 
     // CFAS
