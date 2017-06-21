@@ -57,7 +57,6 @@
 
           this.element.find('.cfas--slideshow').unitegallery({
             gallery_theme: 'slider',
-            gallery_autoplay: false,
             gallery_mousewheel_role: 'none',
             slider_enable_bullets: false,
             slider_enable_fullscreen_button: true,
