@@ -21,7 +21,8 @@
           this.fetchImages(albumUrl)
             .then(this.handleErrors.bind(this))
             .then(this.buildSlideshowHTML.bind(this))
-            .then(this.applyGallery.bind(this));
+            .then(this.applyGallery.bind(this))
+            .then(this.addAccessibility.bind(this));
         },
         fetchImages: function(albumUrl) {
           return $.ajax({
@@ -55,14 +56,37 @@
         applyGallery: function() {
           var aspectRatio = this.getAspectRatio();
 
-          this.element.find('.cfas--slideshow').unitegallery({
+          var api = this.element.find('.cfas--slideshow').unitegallery({
             gallery_theme: 'slider',
             gallery_mousewheel_role: 'none',
             slider_enable_bullets: false,
+            gallery_autoplay: false,
             slider_enable_fullscreen_button: true,
             gallery_width: this.settings.galleryWidth,
             // Dynamically set to specify overall aspect ratio
-            gallery_height: this.settings.galleryWidth / aspectRatio
+            gallery_height: this.settings.galleryWidth / aspectRatio,
+            gallery_skin: 'alexis',
+            slider_fullscreen_button_skin: 'default',
+            gallery_control_keyboard: true,
+          });
+
+          // Bind accessibility events
+          $('.ug-arrow-left', this.element).on('keypress', function(e) {
+            if (e.which === 13) {
+              api.prevItem();
+            }
+          });
+
+          $('.ug-arrow-right', this.element).on('keypress', function(e) {
+            if (e.which === 13) {
+              api.nextItem();
+            }
+          });
+
+          $('.ug-button-fullscreen', this.element).on('keypress', function(e) {
+            if (e.which === 13) {
+              api.toggleFullscreen();
+            }
           });
 
           return this;
@@ -100,6 +124,11 @@
 
             return img;
           });
+        },
+        addAccessibility: function() {
+          $('.ug-slider-control', this.element).attr('tabindex', '0');
+
+          return this;
         }
       };
 

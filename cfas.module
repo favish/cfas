@@ -153,6 +153,7 @@ function cfas_preprocess_page(&$vars) {
     drupal_add_js(libraries_get_path('unitegallery') . '/dist/js/unitegallery.js');
     drupal_add_js(libraries_get_path('unitegallery') . '/dist/themes/slider/ug-theme-slider.js');
     drupal_add_css(libraries_get_path('unitegallery') . '/dist/css/unite-gallery.css');
+    drupal_add_css(libraries_get_path('unitegallery') . '/dist/skins/alexis/alexis.css');
 
     // CFAS
     drupal_add_js(drupal_get_path('module', 'cfas') . '/js/cfas--build-slideshow.js');
