@@ -65,7 +65,6 @@
             gallery_width: this.settings.galleryWidth,
             // Dynamically set to specify overall aspect ratio
             gallery_height: this.settings.galleryWidth / aspectRatio,
-            gallery_skin: 'alexis',
             slider_fullscreen_button_skin: 'default',
             gallery_control_keyboard: true,
           });
