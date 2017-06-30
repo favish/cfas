@@ -56,12 +56,16 @@
 }
 
 .ug-skin-default.ug-arrow-left:before {
+  left: -20px;
   background-image: url(../images/arrow-left.png);
+  @media (min-width: 768px) {
+    left: 0;
+  }
 }
 
 .ug-skin-default.ug-arrow-right:before {
+  right: 15px;
   background-image: url(../images/arrow-right.png);
-  right: 35px;
   @media (min-width: 768px) {
     right: 65px;
   }
