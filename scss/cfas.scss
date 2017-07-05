@@ -49,8 +49,8 @@
     content: "";
     @media (min-width: 768px) {
       top: -25px;
-      width: 80px;
-      height: 80px;
+      width: 60px;
+      height: 60px;
     }
   }
 }
@@ -67,6 +67,6 @@
   right: 15px;
   background-image: url(../images/arrow-right.png);
   @media (min-width: 768px) {
-    right: 65px;
+    right: 45px;
   }
 }
