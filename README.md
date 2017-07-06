@@ -11,7 +11,7 @@ CKEditor then adds a placeholder element that is picked by a jQuery plugin on pa
 * Libraries
 
 ## Library Dependencies
-* Flexslider
+* Unite Gallery - https://github.com/vvvmax/unitegallery/
 
 ## Setup
 * Make sure you have the aforementioned modules and libraries installed in your codebase.
